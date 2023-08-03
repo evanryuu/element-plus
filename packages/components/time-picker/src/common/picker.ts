@@ -1,4 +1,4 @@
-import { isBoolean } from '@element-plus/utils'
+import { isBoolean, isUndefined } from '@element-plus/utils'
 import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '@element-plus/constants'
 import type { DateModelType, SingleOrRange } from './props'
 import type { IDatePickerType } from '@element-plus/components/date-picker/src/date-picker.type'
@@ -8,8 +8,8 @@ import type { Dayjs } from 'dayjs'
 export type PickerType = IDatePickerType | ITimePickerType
 
 export const basicPickerEmits = {
-  blur: (evt?: FocusEvent) => evt instanceof FocusEvent,
-  focus: (evt?: FocusEvent) => evt instanceof FocusEvent,
+  blur: (evt?: FocusEvent) => evt instanceof FocusEvent || evt === undefined,
+  focus: (evt?: FocusEvent) => evt instanceof FocusEvent || evt === undefined,
   'visible-change': (visibility: boolean) => isBoolean(visibility),
   keydown: (evt: KeyboardEvent) => evt instanceof KeyboardEvent,
 }
@@ -24,8 +24,9 @@ export const pickerEmitsWhenTime = {
       | (string | number | Date | Dayjs)[]
       | null
       | undefined
-  ) => true,
-  [CHANGE_EVENT]: (val: SingleOrRange<DateModelType> | null) => true,
+  ) => val || true,
+  [CHANGE_EVENT]: (val: SingleOrRange<DateModelType> | null) =>
+    !isUndefined(val),
 }
 
 export const pickerEmitsWhenDate = {
